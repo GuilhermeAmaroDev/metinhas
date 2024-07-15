@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:metinhas/app/notifiers/tarefa_notifier.dart';
-
+import 'add_metas_dialog.dart';
 import 'metas_model.dart';
 
 class MetasPage extends StatelessWidget {
@@ -18,7 +17,7 @@ class MetasPage extends StatelessWidget {
       body: ValueListenableBuilder<List<Meta>>(
         valueListenable: metasNotifier,
         builder: (context, metas, _) {
-          if (metas.isEmpty){
+          if (metas.isEmpty) {
             return const Center(
               child: Text('Nenhuma meta encontrada'),
             );
@@ -30,7 +29,11 @@ class MetasPage extends StatelessWidget {
               return ListTile(
                 title: Text(
                   metasListadas.descricao,
-                  style: TextStyle(decoration: metasListadas.isCompleta ? TextDecoration.lineThrough : TextDecoration.none),
+                  style: TextStyle(
+                    decoration: metasListadas.isCompleta
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+                  ),
                 ),
                 trailing: Checkbox(
                   value: metasListadas.isCompleta,
@@ -51,29 +54,7 @@ class MetasPage extends StatelessWidget {
           showDialog(
             context: context,
             builder: (context) {
-              TextEditingController metaController = TextEditingController();
-              return AlertDialog(
-                title: const Text('Adicionar meta'),
-                content: TextField(
-                  controller: metaController,
-                  decoration: const InputDecoration(hintText: 'Digite a meta'),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancelar'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      metasNotifier.addMeta(metaController.text);
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Adicionar meta'),
-                  )
-                ],
-              );
+              return AddMetaDialog(metasNotifier: metasNotifier);
             },
           );
         },
