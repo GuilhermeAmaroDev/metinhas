@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:metinhas/app/notifiers/tarefa_notifier.dart';
 
 class AddMetaDialog extends StatelessWidget {
   final TextEditingController metaController = TextEditingController();
   final MetasNotifier metasNotifier;
+  final String tipo;
 
-  AddMetaDialog({super.key, required this.metasNotifier});
+  AddMetaDialog({super.key, required this.metasNotifier, required this.tipo});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +24,9 @@ class AddMetaDialog extends StatelessWidget {
           child: const Text('Cancelar'),
         ),
         TextButton(
-          onPressed: () async {
+          onPressed: () {
             if (metaController.text.isNotEmpty) {
-              metasNotifier.addMeta(metaController.text);
-              await Modular.to.pushReplacementNamed('/');
+              metasNotifier.addMeta(tipo, metaController.text);
               Navigator.of(context).pop();
             }
           },

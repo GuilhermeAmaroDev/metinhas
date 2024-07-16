@@ -1,6 +1,6 @@
-
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:metinhas/app/metas/metas_page.dart';
+import 'package:metinhas/app/notifiers/tarefa_notifier.dart';
 
 class MetasModule extends Module {
   @override
@@ -8,14 +8,16 @@ class MetasModule extends Module {
 
   @override
   void binds(Injector i) {
-   // i.addSingleton<MetasController>(MetasController.new);
+   // i.addSingleton<MetasNotifier>(MetasNotifier());
     super.binds(i);
   }
 
   @override
   void routes(RouteManager r) {
-    r.child(Modular.initialRoute, child: (context) => MetasPage());
-
+    r.child(
+      Modular.initialRoute,
+      child: (context) => MetasPage(metasNotifier: Modular.get<MetasNotifier>()),
+    );
     super.routes(r);
   }
 }

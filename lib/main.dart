@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:metinhas/app/metas/metas_page.dart';
+import 'package:metinhas/app/notifiers/tarefa_notifier.dart'; // Importar o notificador
 
 void main() {
   runApp(const MetinhasApp());
@@ -10,13 +11,14 @@ class MetinhasApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   return MaterialApp(
-     title: 'Metinhas App',
-     theme: ThemeData(
-       primarySwatch: Colors.blue
-     ),
-     home: MetasPage(),
-   );
+    final metasNotifier = MetasNotifier();
+
+    return MaterialApp(
+      title: 'Metinhas App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MetasPage(metasNotifier: metasNotifier),
+    );
   }
 }
-
