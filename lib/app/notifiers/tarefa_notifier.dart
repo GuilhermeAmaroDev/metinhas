@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:metinhas/app/meta_selecionada/meta_categoria_model.dart';
 import 'package:metinhas/app/metas/metas_model.dart';
 
-
 class MetasNotifier extends ValueNotifier<List<CategoriaMeta>> {
   MetasNotifier() : super([]) {
     _initializeCategorias();
@@ -10,10 +9,10 @@ class MetasNotifier extends ValueNotifier<List<CategoriaMeta>> {
 
   void _initializeCategorias() {
     value = [
-      CategoriaMeta(nome: 'Pessoal'),
-      CategoriaMeta(nome: 'Financeira'),
-      CategoriaMeta(nome: 'Profissional'),
-      CategoriaMeta(nome: 'Saúde'),
+      CategoriaMeta(nome: 'Pessoal', metas: []),
+      CategoriaMeta(nome: 'Financeira', metas: []),
+      CategoriaMeta(nome: 'Profissional', metas: []),
+      CategoriaMeta(nome: 'Saúde', metas: []),
     ];
   }
 

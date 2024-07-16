@@ -1,8 +1,9 @@
 import 'package:metinhas/app/metas/metas_model.dart';
 
 class CategoriaMeta {
-  String nome;
+  final String nome;
   List<Meta> metas;
 
-  CategoriaMeta({required this.nome, this.metas = const []});
+  CategoriaMeta({required this.nome, List<Meta>? metas})
+      : metas = metas ?? [];
 }
