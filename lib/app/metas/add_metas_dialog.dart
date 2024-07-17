@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:metinhas/app/notifiers/tarefa_notifier.dart';
+import 'meta_view_model.dart';
+
 
 class AddMetaDialog extends StatelessWidget {
   final TextEditingController metaController = TextEditingController();
-  final MetasNotifier metasNotifier;
-  final String tipo;
+  final MetaViewModel viewModel;
+  final String categoriaNome;
 
-  AddMetaDialog({super.key, required this.metasNotifier, required this.tipo});
+  AddMetaDialog({
+    super.key,
+    required this.viewModel,
+    required this.categoriaNome,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,7 @@ class AddMetaDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             if (metaController.text.isNotEmpty) {
-              metasNotifier.addMeta(tipo, metaController.text);
+              viewModel.addMeta(categoriaNome, metaController.text);
               Navigator.of(context).pop();
             }
           },

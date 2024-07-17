@@ -1,6 +1,10 @@
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:metinhas/app/categoria/categoria_controller.dart';
+import 'package:metinhas/app/categoria/categoria_model.dart';
+import 'package:metinhas/app/categoria/categoria_view_model.dart';
+import 'package:metinhas/app/metas/meta_view_model.dart';
 import 'package:metinhas/app/metas/metas_page.dart';
-import 'package:metinhas/app/notifiers/tarefa_notifier.dart';
+import 'package:metinhas/app/notifiers/value_notifier.dart';
 
 class MetasModule extends Module {
   @override
@@ -16,7 +20,11 @@ class MetasModule extends Module {
   void routes(RouteManager r) {
     r.child(
       Modular.initialRoute,
-      child: (context) => MetasPage(metasNotifier: Modular.get<MetasNotifier>()),
+      child: (context) => MetasPage(
+        metasNotifier: Modular.get<MetasNotifier<CategoriaMeta>>(),
+        controller: Modular.get<CategoriaController>(),
+        metasViewModel: Modular.get<MetaViewModel>(), // Se precisar do view model
+      ),
     );
     super.routes(r);
   }
