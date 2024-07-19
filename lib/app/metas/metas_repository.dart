@@ -1,14 +1,19 @@
-import 'package:metinhas/app/metas/metas_dto.dart';
+import 'package:metinhas/app/database/base_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
+import 'metas_dto.dart';
 
-class MetaRepository {
-  final Database database;
 
-  MetaRepository(this.database);
 
-  Future<void> createTable() async {
-    await database.execute('''
+class MetaRepository extends BaseRepository<MetasDto> {
+  MetaRepository() : super();
+
+  @override
+  String get tableName => 'metas';
+
+  @override
+  void createTable(Batch batch) async {
+    batch.execute('''
       CREATE TABLE IF NOT EXISTS metas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         descricao TEXT NOT NULL,
@@ -19,41 +24,54 @@ class MetaRepository {
     ''');
   }
 
-  Future<void> addMeta(MetasDto meta) async {
-    await database.insert('metas', meta.toMap());
-  }
-
-  Future<List<MetasDto>> getMetas(int categoriaId) async {
-    final List<Map<String, dynamic>> maps = await database.query(
-      'metas',
-      where: 'categoriaId = ?',
-      whereArgs: [categoriaId],
-    );
-    return List.generate(maps.length, (i) => MetasDto.fromMap(maps[i]));
-  }
-
-  Future<void> updateMeta(MetasDto meta) async {
-    await database.update(
-      'metas',
-      meta.toMap(),
-      where: 'id = ?',
-      whereArgs: [meta.id],
+  @override
+  Future<List<MetasDto>> getAll({String? orderBy, String? where, List<dynamic>? whereArgs, int? limit, bool deletado = false, DatabaseExecutor? dbExecutor}) async {
+    return super.getAll(
+      orderBy: orderBy ?? 'nome COLLATE NOCASE',
+      where: where,
+      whereArgs: whereArgs,
+      limit: limit,
+      deletado: deletado,
+      dbExecutor: dbExecutor,
     );
   }
 
-  Future<void> deleteMeta(int id) async {
-    await database.delete(
-      'metas',
+  @override
+  Future<int> insert(Map<String, dynamic> data) async {
+    final dbClient = await database;
+    return await dbClient.insert(tableName, data);
+  }
+
+  @override
+  Future<int> update(Map<String, dynamic> data, int id) async {
+    final dbClient = await database;
+    return await dbClient.update(
+      tableName,
+      data,
       where: 'id = ?',
       whereArgs: [id],
     );
   }
 
-  Future<void> deleteAllMetas(int categoriaId) async {
-    await database.delete(
-      'metas',
-      where: 'categoriaId = ?',
-      whereArgs: [categoriaId],
+
+  @override
+  Future<int> delete(int id) async {
+    final dbClient = await database;
+    return await dbClient.delete(
+      tableName,
+      where: 'id = ?',
+      whereArgs: [id],
     );
   }
+
+  @override
+  MetasDto fromMap(Map<String, dynamic> map) {
+    return MetasDto.fromMap(map);
+  }
+
+  @override
+  Map<String, dynamic> toMap(MetasDto dto) {
+    return dto.toMap();
+  }
+
 }

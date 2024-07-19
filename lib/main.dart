@@ -1,25 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:metinhas/app/metas/metas_page.dart';
-import 'package:metinhas/app/notifiers/value_notifier.dart'; // Importar o notificador
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:metinhas/app/app_widget.dart';
+import 'app/app_module.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() {
-  runApp(const MetinhasApp());
-}
+Future<void> main() async {
+  databaseFactory = databaseFactoryFfi;
+  WidgetsFlutterBinding.ensureInitialized();
 
-class MetinhasApp extends StatelessWidget {
-  const MetinhasApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final metasNotifier = MetasNotifier();
-
-
-    return MaterialApp(
-      title: 'Metinhas App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MetasPage(metasNotifier: metasNotifier),
-    );
-  }
+  runApp(
+    ModularApp(
+      module: AppModule(), child: const AppWidget(),
+    
+    ),
+  );
+  
 }

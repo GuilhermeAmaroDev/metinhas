@@ -1,16 +1,15 @@
-
+import 'package:flutter/material.dart';
 import 'package:metinhas/app/categoria/categoria_model.dart';
-import 'package:metinhas/app/notifiers/value_notifier.dart';
-import 'metas_model.dart';
+import 'package:metinhas/app/metas/metas_model.dart';
 
-class MetaViewModel {
-  final MetasNotifier<CategoriaMeta> notifier;
+class MetasPageController {
+  ValueNotifier<List<Categoria>> notifier = ValueNotifier([]);
 
-  MetaViewModel(this.notifier);
+  MetasPageController();
 
   void addMeta(String categoriaNome, String descricao) {
     final categoria = notifier.value.firstWhere((cat) => cat.nome == categoriaNome);
-    final novaMeta = Meta(descricao: descricao);
+    final novaMeta = Meta(descricao: descricao, isCompleta: false);
     categoria.metas.add(novaMeta);
     notifier.value = List.from(notifier.value);
   }

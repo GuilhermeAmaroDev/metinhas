@@ -7,10 +7,10 @@ class MetaService {
   MetaService(this.repository);
 
   Future<void> addMeta(MetasDto meta) async {
-    await repository.addMeta(meta);
+    await repository.insert(meta.toMap());
   }
 
   Future<List<MetasDto>> getMetas(int categoriaId) async {
-    return await repository.getMetas(categoriaId);
+    return await repository.getAll();
   }
 }

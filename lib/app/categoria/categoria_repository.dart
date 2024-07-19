@@ -1,13 +1,17 @@
-import 'package:metinhas/app/categoria/categoria_dto.dart';
+import 'package:metinhas/app/database/base_repository.dart';
 import 'package:sqflite/sqflite.dart';
+import 'categoria_dto.dart';
 
-class CategoriaRepository {
-  final Database database;
 
-  CategoriaRepository(this.database);
+class CategoriaRepository extends BaseRepository<CategoriaDto> {
+  CategoriaRepository() : super();
 
-  Future<void> createTable() async {
-    await database.execute('''
+  @override
+  String get tableName => 'categorias';
+
+  @override
+  void createTable(Batch batch) async {
+    batch.execute('''
       CREATE TABLE IF NOT EXISTS categorias (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL UNIQUE,
@@ -16,29 +20,54 @@ class CategoriaRepository {
     ''');
   }
 
-  Future<void> addCategoria(CategoriaDto categoria) async {
-    await database.insert('categorias', categoria.toMap());
-  }
-
-  Future<List<CategoriaDto>> getAllCategorias() async {
-    final List<Map<String, dynamic>> maps = await database.query('categorias');
-    return List.generate(maps.length, (i) => CategoriaDto.fromMap(maps[i]));
-  }
-
-  Future<void> updateCategoria(CategoriaDto categoria) async {
-    await database.update(
-      'categorias',
-      categoria.toMap(),
-      where: 'id = ?',
-      whereArgs: [categoria.id],
+  @override
+  Future<List<CategoriaDto>> getAll({String? orderBy, String? where, List<dynamic>? whereArgs, int? limit, bool deletado = false, DatabaseExecutor? dbExecutor}) async {
+    return super.getAll(
+      orderBy: orderBy ?? 'nome COLLATE NOCASE',
+      where: where,
+      whereArgs: whereArgs,
+      limit: limit,
+      deletado: deletado,
+      dbExecutor: dbExecutor,
     );
   }
 
-  Future<void> deleteCategoria(int id) async {
-    await database.delete(
-      'categorias',
+  @override
+  Future<int> insert(Map<String, dynamic> data) async {
+    final dbClient = await database;
+    return await dbClient.insert(tableName, data);
+  }
+
+  @override
+  Future<int> update(Map<String, dynamic> data, int id) async {
+    final dbClient = await database;
+    return await dbClient.update(
+      tableName,
+      data,
       where: 'id = ?',
       whereArgs: [id],
     );
   }
+
+
+  @override
+  Future<int> delete(int id) async {
+    final dbClient = await database;
+    return await dbClient.delete(
+      tableName,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  @override
+  CategoriaDto fromMap(Map<String, dynamic> map) {
+    return CategoriaDto.fromMap(map);
+  }
+
+  @override
+  Map<String, dynamic> toMap(CategoriaDto dto) {
+    return dto.toMap();
+  }
+
 }

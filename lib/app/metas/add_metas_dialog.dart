@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'meta_view_model.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:metinhas/app/metas/metas_page_controller.dart';
 
 
 class AddMetaDialog extends StatelessWidget {
   final TextEditingController metaController = TextEditingController();
-  final MetaViewModel viewModel;
+  final MetasPageController metasPageController = Modular.get<MetasPageController>();
   final String categoriaNome;
 
   AddMetaDialog({
     super.key,
-    required this.viewModel,
     required this.categoriaNome,
   });
 
@@ -31,7 +31,7 @@ class AddMetaDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             if (metaController.text.isNotEmpty) {
-              viewModel.addMeta(categoriaNome, metaController.text);
+              metasPageController.addMeta(categoriaNome, metaController.text);
               Navigator.of(context).pop();
             }
           },

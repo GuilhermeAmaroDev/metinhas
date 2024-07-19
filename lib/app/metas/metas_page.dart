@@ -1,261 +1,117 @@
 import 'package:flutter/material.dart';
-import 'package:metinhas/app/categoria/categoria_controller.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:metinhas/app/app_controller.dart';
 import 'package:metinhas/app/categoria/categoria_model.dart';
-import 'package:metinhas/app/categoria/categoria_selecionada_page.dart';
-import 'package:metinhas/app/metas/meta_view_model.dart';
-import 'package:metinhas/app/notifiers/value_notifier.dart';
+import 'package:metinhas/app/metas/metas_model.dart';
+import 'package:metinhas/app/metas/metas_page_controller.dart';
 
-class MetasPage extends StatefulWidget  {
-  final MetasNotifier<CategoriaMeta> metasNotifier;
-  final CategoriaController controller;
-  final MetaViewModel metasViewModel;
+class MetasPage extends StatefulWidget {
 
-  const MetasPage({required this.metasNotifier, super.key, required this.controller, required this.metasViewModel});
+
+  const MetasPage({Key? key}) : super(key: key);
 
   @override
-  _MetasPageState createState() => _MetasPageState();
+  State<MetasPage> createState() => _MetasPageState();
 }
 
 class _MetasPageState extends State<MetasPage> {
+  final AppController appController = Modular.get<AppController>();
+  late final String categoriaNome;
+  late final MetasPageController metasPageController;
+
   @override
   void initState() {
     super.initState();
-    widget.controller.loadCategorias();
+    appController.carregarCategorias();
+    appController.carregarMetas();
+    metasPageController = MetasPageController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Metinhas',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-        ),
-        centerTitle: true,
-        elevation: 4,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.purple, Colors.deepPurple],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(30),
-            ),
-          ),
-        ),
+        title: Text('Metas $categoriaNome'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey[200]!],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: ValueListenableBuilder<List<CategoriaMeta>>(
-          valueListenable: widget.metasNotifier,
-          builder: (context, categorias, _) {
-            if (categorias.isEmpty) {
-              return const Center(
-                child: Text(
-                  'Nenhuma categoria encontrada',
-                  style: TextStyle(fontSize: 18),
-                ),
-              );
-            }
+      body: ValueListenableBuilder<List<Categoria>>(
+        valueListenable: appController.categoriasNotifier,
+        builder: (context, categorias, _) {
+          final categoria = categorias.firstWhere(
+                (cat) => cat.nome == categoriaNome,
+            orElse: () => Categoria(id: 0, nome: categoriaNome, icon: null),
+          );
 
-            return ListView.builder(
-              itemCount: categorias.length,
-              itemBuilder: (context, index) {
-                final categoria = categorias[index];
-                return Card(
-                  elevation: 6,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MetaSelecionadaPage(
-                            categoriaNome: categoria.nome,
-                             categoriaViewModel: widget.controller.viewModel, metaViewModel: widget.metasViewModel,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: _getCardGradient(index),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          if (categoria.icon != null)
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.3),
-                                    spreadRadius: 2,
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(
-                                categoria.icon,
-                                size: 32,
-                                color: _getIconColor(index),
-                              ),
-                            ),
-                          const SizedBox(width: 16),
-                          Text(
-                            categoria.nome,
-                            style: const TextStyle(fontSize: 18, color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+          if (categoria.metas.isEmpty) {
+            return const Center(
+              child: Text('Nenhuma meta encontrada'),
             );
-          },
-        ),
+          }
+
+          return ListView.builder(
+            itemCount: categoria.metas.length,
+            itemBuilder: (context, index) {
+              final meta = categoria.metas[index];
+              return ListTile(
+                title: Text(
+                  meta.descricao,
+                  style: TextStyle(
+                    decoration: meta.isCompleta ? TextDecoration.lineThrough : TextDecoration.none,
+                  ),
+                ),
+                trailing: Checkbox(
+                  value: meta.isCompleta,
+                  onChanged: (value) {
+                    setState(() {
+                      metasPageController.updateMeta(categoriaNome, index);
+                    });
+                  },
+                ),
+                onLongPress: () {
+                  setState(() {
+                    metasPageController.removeMeta(categoriaNome, index);
+                  });
+                },
+              );
+            },
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showAddCategoriaDialog(context);
-        },
-        backgroundColor: Colors.purple[300],
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  LinearGradient _getCardGradient(int index) {
-    const gradients = [
-      LinearGradient(
-        colors: [Color(0xFFFFABAB), Color(0xFFFF6F61)], // Light Red
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      LinearGradient(
-        colors: [Color(0xFFB9FBC0), Color(0xFF68B984)], // Light Green
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      LinearGradient(
-        colors: [Color(0xFFD1C4E9), Color(0xFF9575CD)], // Light Purple
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      LinearGradient(
-        colors: [Color(0xFFB3E5FC), Color(0xFF64B5F6)], // Light Blue
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-    ];
-    return gradients[index % gradients.length];
-  }
-
-  Color _getIconColor(int index) {
-    const colors = [
-      Color(0xFFFF6F61), // Light Red
-      Color(0xFF68B984), // Light Green
-      Color(0xFF9575CD), // Light Purple
-      Color(0xFF64B5F6), // Light Blue
-    ];
-    return colors[index % colors.length];
-  }
-
-  void _showAddCategoriaDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        String newCategoriaNome = '';
-        IconData? selectedIcon;
-
-        return AlertDialog(
-          title: const Text('Adicionar Categoria'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                onChanged: (value) {
-                  newCategoriaNome = value;
-                },
-                decoration: const InputDecoration(labelText: 'Nome da Categoria'),
-              ),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 10,
-                children: [
-                  _buildIconOption(Icons.work, selectedIcon, (icon) {
-                    selectedIcon = icon;
-                  }),
-                  _buildIconOption(Icons.home, selectedIcon, (icon) {
-                    selectedIcon = icon;
-                  }),
-                  _buildIconOption(Icons.favorite, selectedIcon, (icon) {
-                    selectedIcon = icon;
-                  }),
-                  _buildIconOption(Icons.health_and_safety, selectedIcon, (icon) {
-                    selectedIcon = icon;
-                  }),
+          showDialog(
+            context: context,
+            builder: (context) {
+              final TextEditingController metaController = TextEditingController();
+              return AlertDialog(
+                title: const Text('Adicionar meta'),
+                content: TextField(
+                  controller: metaController,
+                  decoration: const InputDecoration(hintText: 'Digite a meta'),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancelar'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      if (metaController.text.isNotEmpty) {
+                        setState(() {
+                          metasPageController.addMeta(categoriaNome, metaController.text);
+                        });
+                      }
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Adicionar meta'),
+                  ),
                 ],
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (newCategoriaNome.isNotEmpty && selectedIcon != null) {
-                  widget.metasNotifier.add(
-                    CategoriaMeta(nome: newCategoriaNome, icon: selectedIcon!),
-                  );
-                }
-                Navigator.of(context).pop();
-              },
-              child: const Text('Adicionar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildIconOption(IconData icon, IconData? selectedIcon, void Function(IconData) onSelected) {
-    return GestureDetector(
-      onTap: () {
-        onSelected(icon);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          border: Border.all(
-            color: selectedIcon == icon ? Colors.purple : Colors.transparent,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        padding: const EdgeInsets.all(8),
-        child: Icon(icon, size: 32, color: selectedIcon == icon ? Colors.purple : Colors.black),
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
