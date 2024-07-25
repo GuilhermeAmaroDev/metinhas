@@ -1,5 +1,7 @@
-import 'categoria_dto.dart';
-import 'categoria_repository.dart';
+import 'package:metinhas/app/categoria/categoria_model.dart';
+
+import '../dto/categoria_dto.dart';
+import '../repositories/categoria_repository.dart';
 
 class CategoriaService {
   final CategoriaRepository _repository;
@@ -13,7 +15,8 @@ class CategoriaService {
     await _repository.delete(categoria.id);
   }
 
-  Future<List<CategoriaDto>> getCategorias() async {
-    return await _repository.getAll();
+  Future<List<Categoria>> getAllCategorias() async {
+    final categoriaDtos = await _repository.getAll();
+    return categoriaDtos.map((dto) => Categoria.fromDto(dto)).toList();
   }
 }

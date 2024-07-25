@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
-import 'package:metinhas/app/metas/metas_repository.dart';
-import 'package:metinhas/app/categoria/categoria_repository.dart';
+import 'package:metinhas/app/metas/repositories/metas_repository.dart';
+import 'package:metinhas/app/categoria/repositories/categoria_repository.dart';
 import 'package:metinhas/app/metas/metas_model.dart';
 import 'package:metinhas/app/categoria/categoria_model.dart';
 

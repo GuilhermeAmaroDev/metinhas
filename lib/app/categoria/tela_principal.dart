@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:get_it/get_it.dart';
-import 'package:metinhas/app/categoria/categoria_controller.dart';
+import 'package:metinhas/app/categoria/controller/categoria_controller.dart';
 import 'package:metinhas/app/categoria/categoria_model.dart';
 import 'package:metinhas/app/metas/metas_page.dart';
-import 'package:metinhas/app/notifiers/value_notifier.dart';
 
 class TelaPrincipal extends StatefulWidget {
   const TelaPrincipal({super.key});
@@ -54,7 +52,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           ),
         ),
         child: ValueListenableBuilder<List<Categoria>>(
-          valueListenable: controller.metasNotifier,
+          valueListenable: controller.categoriasNotifier,
           builder: (context, categorias, _) {
             if (categorias.isEmpty) {
               return const Center(
@@ -223,7 +221,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             TextButton(
               onPressed: () {
                 if (newCategoriaNome.isNotEmpty && selectedIcon != null) {
-                  controller.metasNotifier.add(
+                  controller.categoriasNotifier.add(
                     Categoria(nome: newCategoriaNome, icon: selectedIcon!),
                   );
                 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'categoria_dto.dart';
 import 'package:metinhas/app/metas/metas_model.dart';
-import 'package:metinhas/app/metas/metas_dto.dart';
+
+import 'dto/categoria_dto.dart';
 
 class Categoria {
   final String nome;

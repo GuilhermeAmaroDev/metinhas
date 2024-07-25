@@ -1,4 +1,4 @@
-import 'package:metinhas/app/metas/metas_dto.dart';
+import 'package:metinhas/app/metas/dto/metas_dto.dart';
 
 class CategoriaDto {
   final int id;

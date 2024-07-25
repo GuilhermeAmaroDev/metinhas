@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:metinhas/app/notifiers/value_notifier.dart';
-
-import 'categoria_model.dart';
-import 'categoria_service.dart';
-
+import '../categoria_model.dart';
+import '../services/categoria_service.dart';
 
 class CategoriaController {
   CategoriaService service;
+  final ValueNotifierList<Categoria> _categoriasNotifier = ValueNotifierList([]);
+
 
   CategoriaController(this.service);
 
-  late final MetasNotifier<Categoria> metasNotifier;
+  ValueNotifierList<Categoria> get categoriasNotifier => _categoriasNotifier;
 
   Future<void> loadCategorias() {
     return initializeCategorias();
@@ -38,7 +38,7 @@ class CategoriaController {
 
 
   Future<void> initializeCategorias() async {
-    final loadedCategorias = await service.getCategorias();
+    final loadedCategorias = await service.getAllCategorias();
     loadedCategorias?.cast<Categoria>() ?? [
       Categoria(id: 1, nome: 'Pessoal'),
       Categoria(id: 2, nome: 'Financeira'),

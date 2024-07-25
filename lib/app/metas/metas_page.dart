@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:metinhas/app/app_controller.dart';
 import 'package:metinhas/app/categoria/categoria_model.dart';
-import 'package:metinhas/app/metas/metas_model.dart';
-import 'package:metinhas/app/metas/metas_page_controller.dart';
+import 'package:metinhas/app/metas/controller/metas_page_controller.dart';
 
 class MetasPage extends StatefulWidget {
 
 
-  const MetasPage({Key? key}) : super(key: key);
+  const MetasPage({super.key});
 
   @override
   State<MetasPage> createState() => _MetasPageState();

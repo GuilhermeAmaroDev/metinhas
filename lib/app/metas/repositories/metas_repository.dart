@@ -1,7 +1,7 @@
 import 'package:metinhas/app/database/base_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'metas_dto.dart';
+import '../dto/metas_dto.dart';
 
 
 

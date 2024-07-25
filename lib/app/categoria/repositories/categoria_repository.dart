@@ -1,6 +1,6 @@
 import 'package:metinhas/app/database/base_repository.dart';
 import 'package:sqflite/sqflite.dart';
-import 'categoria_dto.dart';
+import '../dto/categoria_dto.dart';
 
 
 class CategoriaRepository extends BaseRepository<CategoriaDto> {

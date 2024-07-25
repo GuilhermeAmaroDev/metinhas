@@ -1,5 +1,5 @@
-import 'metas_dto.dart';
-import 'metas_repository.dart';
+import '../dto/metas_dto.dart';
+import '../repositories/metas_repository.dart';
 
 class MetaService {
   final MetaRepository repository;

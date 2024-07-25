@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-class MetasNotifier<T> extends ValueNotifier<List<T>> {
-  MetasNotifier() : super([]);
+class ValueNotifierList<T> extends ValueNotifier<List<T>> {
+  ValueNotifierList(super.value);
 
   void add(T item) {
     value = [...value, item];
@@ -9,21 +9,12 @@ class MetasNotifier<T> extends ValueNotifier<List<T>> {
   }
 
   void update(int index, T item) {
-    if (index >= 0 && index < value.length) {
-      value[index] = item;
-      notifyListeners();
-    }
+    value[index] = item;
+    notifyListeners();
   }
 
-  void removeAt(int index) {
-    if (index >= 0 && index < value.length) {
-      value = [...value]..removeAt(index);
-      notifyListeners();
-    }
-  }
-
-  void clear() {
-    value = [];
+  void remove(T item) {
+    value = value.where((i) => i != item).toList();
     notifyListeners();
   }
 }
