@@ -53,7 +53,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
         ),
         child: ValueListenableBuilder<List<Categoria>>(
           valueListenable: controller.categoriasNotifier,
-          builder: (context, categorias, _) {
+          builder: (_, categorias, __) {
             if (categorias.isEmpty) {
               return const Center(
                 child: Text(

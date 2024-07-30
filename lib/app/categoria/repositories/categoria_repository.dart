@@ -12,12 +12,14 @@ class CategoriaRepository extends BaseRepository<CategoriaDto> {
   @override
   void createTable(Batch batch) async {
     batch.execute('''
-      CREATE TABLE IF NOT EXISTS categorias (
+      CREATE TABLE categorias (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL UNIQUE,
-        icon TEXT NOT NULL
+        icon INTEGER
       )
     ''');
+    
+    batch.execute("INSERT INTO categorias(nome) VALUES ('Profissional'), ('Pessoal'), ('Financeira'), ('Viagens'), ('Saúde'), ('Games')");
   }
 
   @override
@@ -27,7 +29,7 @@ class CategoriaRepository extends BaseRepository<CategoriaDto> {
       where: where,
       whereArgs: whereArgs,
       limit: limit,
-      deletado: deletado,
+      deletado: true,
       dbExecutor: dbExecutor,
     );
   }

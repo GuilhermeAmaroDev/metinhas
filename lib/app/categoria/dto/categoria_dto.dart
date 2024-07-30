@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:metinhas/app/metas/dto/metas_dto.dart';
 
 class CategoriaDto {
@@ -27,7 +28,7 @@ class CategoriaDto {
       id: map['id'],
       nome: map['nome'],
       icon: map['icon'],
-      metas: (map['metas'] as List).map((metaMap) => MetasDto.fromMap(metaMap)).toList(),
+      metas: map['metas'] != null ? (map['metas'] as List).map((metaMap) => MetasDto.fromMap(metaMap)).toList() : [],
     );
   }
 }

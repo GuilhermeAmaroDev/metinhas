@@ -5,15 +5,12 @@ import '../services/categoria_service.dart';
 
 class CategoriaController {
   CategoriaService service;
-  final ValueNotifierList<Categoria> _categoriasNotifier = ValueNotifierList([]);
-
+  ValueNotifierList<Categoria> categoriasNotifier = ValueNotifierList([]);
 
   CategoriaController(this.service);
 
-  ValueNotifierList<Categoria> get categoriasNotifier => _categoriasNotifier;
-
-  Future<void> loadCategorias() {
-    return initializeCategorias();
+  Future<void> loadCategorias() async {
+    await initializeCategorias();
   }
 
   void addCategoria(String nome) {
@@ -38,12 +35,7 @@ class CategoriaController {
 
 
   Future<void> initializeCategorias() async {
-    final loadedCategorias = await service.getAllCategorias();
-    loadedCategorias?.cast<Categoria>() ?? [
-      Categoria(id: 1, nome: 'Pessoal'),
-      Categoria(id: 2, nome: 'Financeira'),
-      Categoria(id: 3, nome: 'Profissional'),
-      Categoria(id: 4, nome: 'Saúde'),
-    ];
+    final categorias = await service.getAllCategorias();
+    categoriasNotifier.addAll(categorias);
   }
 }

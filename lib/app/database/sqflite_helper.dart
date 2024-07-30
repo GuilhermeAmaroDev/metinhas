@@ -1,3 +1,5 @@
+import 'package:metinhas/app/categoria/repositories/categoria_repository.dart';
+import 'package:metinhas/app/metas/repositories/metas_repository.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -29,22 +31,12 @@ class SqfliteHelper {
   }
 
   void _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE categorias (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        icon TEXT NOT NULL
-      )
-    ''');
-    await db.execute('''
-      CREATE TABLE metas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        titulo TEXT NOT NULL,
-        descricao TEXT,
-        categoriaId INTEGER,
-        FOREIGN KEY (categoriaId) REFERENCES categorias (id)
-      )
-    ''');
+    final batch = db.batch();
+
+    CategoriaRepository().createTable(batch);
+    MetaRepository().createTable(batch);
+
+    await batch.commit();
   }
 
   void _onUpgrade(Database db, int oldVersion, int newVersion) async {
