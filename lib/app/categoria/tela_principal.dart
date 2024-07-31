@@ -37,9 +37,9 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(30),
-            ),
+            // borderRadius: BorderRadius.vertical(
+            //   bottom: Radius.circular(30),
+            // ),
           ),
         ),
       ),
@@ -63,63 +63,40 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               );
             }
 
-            return ListView.builder(
+            return GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+              ),
               itemCount: categorias.length,
               itemBuilder: (context, index) {
                 final categoria = categorias[index];
-                return Card(
-                  elevation: 6,
-                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MetasPage(
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: _getCardGradient(index),
-                        borderRadius: BorderRadius.circular(16),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MetasPage(),
                       ),
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          if (categoria.icon != null)
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.3),
-                                    spreadRadius: 2,
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(
-                                categoria.icon,
-                                size: 32,
-                                color: _getIconColor(index),
-                              ),
-                            ),
-                          const SizedBox(width: 16),
-                          Text(
-                            categoria.nome,
-                            style: const TextStyle(fontSize: 18, color: Colors.black),
-                          ),
-                        ],
+                    );
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        categoria.icon,
+                        size: 50,
+                        color: Colors.black,
                       ),
-                    ),
+                      const SizedBox(height: 8),
+                      Text(
+                        categoria.nome,
+                        style: const TextStyle(fontSize: 16, color: Colors.black),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 );
               },
@@ -135,42 +112,6 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  LinearGradient _getCardGradient(int index) {
-    const gradients = [
-      LinearGradient(
-        colors: [Color(0xFFFFABAB), Color(0xFFFF6F61)], // Light Red
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      LinearGradient(
-        colors: [Color(0xFFB9FBC0), Color(0xFF68B984)], // Light Green
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      LinearGradient(
-        colors: [Color(0xFFD1C4E9), Color(0xFF9575CD)], // Light Purple
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      LinearGradient(
-        colors: [Color(0xFFB3E5FC), Color(0xFF64B5F6)], // Light Blue
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-    ];
-    return gradients[index % gradients.length];
-  }
-
-  Color _getIconColor(int index) {
-    const colors = [
-      Color(0xFFFF6F61), // Light Red
-      Color(0xFF68B984), // Light Green
-      Color(0xFF9575CD), // Light Purple
-      Color(0xFF64B5F6), // Light Blue
-    ];
-    return colors[index % colors.length];
   }
 
   void _showAddCategoriaDialog(BuildContext context) {
@@ -195,16 +136,22 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
               Wrap(
                 spacing: 10,
                 children: [
+                  _buildIconOption(Icons.person, selectedIcon, (icon) {
+                    selectedIcon = icon;
+                  }),
+                  _buildIconOption(Icons.attach_money, selectedIcon, (icon) {
+                    selectedIcon = icon;
+                  }),
                   _buildIconOption(Icons.work, selectedIcon, (icon) {
                     selectedIcon = icon;
                   }),
-                  _buildIconOption(Icons.home, selectedIcon, (icon) {
-                    selectedIcon = icon;
-                  }),
-                  _buildIconOption(Icons.favorite, selectedIcon, (icon) {
-                    selectedIcon = icon;
-                  }),
                   _buildIconOption(Icons.health_and_safety, selectedIcon, (icon) {
+                    selectedIcon = icon;
+                  }),
+                  _buildIconOption(Icons.videogame_asset, selectedIcon, (icon) {
+                    selectedIcon = icon;
+                  }),
+                  _buildIconOption(Icons.airplanemode_active, selectedIcon, (icon) {
                     selectedIcon = icon;
                   }),
                 ],
@@ -221,9 +168,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             TextButton(
               onPressed: () {
                 if (newCategoriaNome.isNotEmpty && selectedIcon != null) {
-                  controller.categoriasNotifier.add(
-                    Categoria(nome: newCategoriaNome, icon: selectedIcon!),
-                  );
+                  controller.addCategoria(newCategoriaNome, selectedIcon!);
                 }
                 Navigator.of(context).pop();
               },
@@ -239,6 +184,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
     return GestureDetector(
       onTap: () {
         onSelected(icon);
+        setState(() {});
       },
       child: Container(
         decoration: BoxDecoration(

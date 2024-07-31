@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:metinhas/app/database/base_repository.dart';
 import 'package:sqflite/sqflite.dart';
 import '../dto/categoria_dto.dart';
-
 
 class CategoriaRepository extends BaseRepository<CategoriaDto> {
   CategoriaRepository() : super();
@@ -18,8 +18,8 @@ class CategoriaRepository extends BaseRepository<CategoriaDto> {
         icon INTEGER
       )
     ''');
-    
-    batch.execute("INSERT INTO categorias(nome) VALUES ('Profissional'), ('Pessoal'), ('Financeira'), ('Viagens'), ('Saúde'), ('Games')");
+
+    batch.execute("INSERT INTO categorias(nome, icon) VALUES ('Profissional', ${Icons.work.codePoint}), ('Pessoal', ${Icons.person.codePoint}), ('Financeira', ${Icons.attach_money.codePoint}), ('Viagens', ${Icons.airplanemode_active.codePoint}), ('Saúde', ${Icons.health_and_safety.codePoint}), ('Games', ${Icons.videogame_asset.codePoint})");
   }
 
   @override
@@ -51,7 +51,6 @@ class CategoriaRepository extends BaseRepository<CategoriaDto> {
     );
   }
 
-
   @override
   Future<int> delete(int id) async {
     final dbClient = await database;
@@ -71,5 +70,4 @@ class CategoriaRepository extends BaseRepository<CategoriaDto> {
   Map<String, dynamic> toMap(CategoriaDto dto) {
     return dto.toMap();
   }
-
 }

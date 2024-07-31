@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:metinhas/app/metas/dto/metas_dto.dart';
 
 class CategoriaDto {
   final int id;
   final String nome;
-  final int? icon;
+  final IconData? icon;
   final List<MetasDto> metas;
 
   CategoriaDto({
@@ -18,16 +18,16 @@ class CategoriaDto {
     return {
       'id': id,
       'nome': nome,
-      'icon': icon,
+      'icon': icon?.codePoint,
       'metas': metas.map((meta) => meta.toMap()).toList(),
     };
   }
 
   factory CategoriaDto.fromMap(Map<String, dynamic> map) {
     return CategoriaDto(
-      id: map['id'],
-      nome: map['nome'],
-      icon: map['icon'],
+      id: map['id'] as int,
+      nome: map['nome'] as String,
+      icon: map['icon'] != null ? IconData(map['icon'], fontFamily: 'MaterialIcons') : null,
       metas: map['metas'] != null ? (map['metas'] as List).map((metaMap) => MetasDto.fromMap(metaMap)).toList() : [],
     );
   }

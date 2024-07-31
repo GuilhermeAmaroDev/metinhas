@@ -15,7 +15,7 @@ class Categoria {
     return Categoria(
       id: dto.id,
       nome: dto.nome,
-      icon: null,
+      icon: dto.icon,
       metas: dto.metas.map((metaDto) => Meta.fromDto(metaDto)).toList(),
     );
   }
@@ -24,7 +24,7 @@ class Categoria {
     return CategoriaDto(
       id: id ?? 0,
       nome: nome,
-      icon: icon?.codePoint,
+      icon: icon,
       metas: metas.map((meta) => meta.toDto()).toList(),
     );
   }

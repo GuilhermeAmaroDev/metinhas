@@ -13,24 +13,19 @@ class CategoriaController {
     await initializeCategorias();
   }
 
-  void addCategoria(String nome) {
-    final novaCategoria = Categoria(id: 0, nome: nome);
+  void addCategoria(String nome, IconData icon) {
+    final novaCategoria = Categoria(id: 0, nome: nome, icon: icon);
     service.addCategoria(novaCategoria.toDto());
+    categoriasNotifier.add(novaCategoria);
   }
-
-  // void updateCategoria(int index, Categoria categoria) {
-  //   viewModel.notifier.update(index, categoria);
-  // }
-  //
-  // void removeCategoria(int index) {
-  //   service.deletarCategoria();
-  // }
 
   final Map<String, IconData> iconMap = {
     'Pessoal': Icons.person,
     'Financeira': Icons.attach_money,
     'Profissional': Icons.work,
     'Saúde': Icons.health_and_safety,
+    'Games': Icons.videogame_asset,
+    'Viagens': Icons.airplanemode_active,
   };
 
 
